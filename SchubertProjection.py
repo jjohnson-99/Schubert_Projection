@@ -144,7 +144,7 @@ class SchubertProjection:
         P = A@U
         Q = B@Vt.T
         new_U = Q
-        new_U[:0] = P[:0]
+        new_U[:,0] = P[:,0]
         self.U_array[Uj] = new_U
         
     def testProjection(self, xi, Uj):
