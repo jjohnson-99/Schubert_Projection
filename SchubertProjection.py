@@ -4,12 +4,11 @@ import time
 from helper_functions import dUU
 import os
 
-class GrassmannianFusion:
+class SchubertProjection:
     X: np.ndarray
     Omega: np.ndarray
     r: int
     lamb: float
-    weight_factor: float
     step_size: float
     g_threshold: float
     bound_zero: float
@@ -28,9 +27,7 @@ class GrassmannianFusion:
         np.savez_compressed(path, X=self.X,
                                 Omega = self.Omega,
                                 r = self.r,
-                                lamb = self.lamb,
-                                weight_factor = self.weight_factor,
-                                weight_offset = self.weight_offset,
+                                lamb = self.lamb,,
                                 g_threshold = self.g_threshold,
                                 bound_zero = self.bound_zero,
                                 singular_value_bound = self.singular_value_bound,
@@ -44,12 +41,10 @@ class GrassmannianFusion:
     def load_model(path):
         #rebuild the object
         data = np.load(path)
-        GF = GrassmannianFusion(X = data['X'],
+        SP = SchubertProjection(X = data['X'],
                 Omega = data['Omega'],
                 r = data['r'],
                 lamb = data['lamb'],
-                weight_factor = data['weight_factor'],
-                weight_offset = data['weight_offset'],
                 g_threshold = data['g_threshold'],
                 bound_zero = data['bound_zero'],
                 singular_value_bound = data['singular_value_bound'],
@@ -58,13 +53,11 @@ class GrassmannianFusion:
                 U_array = data['U_array'])
         
         print('Successfully loaded the model!')
-        return GF
+        return SP
 
 
     #U_array load version
     def __init__(self, X, Omega, r, lamb,
-                weight_factor = 1,
-                weight_offset = 0.5,
                 g_threshold = 0.15,
                 bound_zero = 1e-10,
                 singular_value_bound = 1e-2,
@@ -77,8 +70,6 @@ class GrassmannianFusion:
         self.Omega = Omega
         self.r = r
         self.lamb = lamb
-        self.weight_factor = weight_factor
-        self.weight_offset = weight_offset
         self.g_threshold = g_threshold
         self.bound_zero = bound_zero
         self.singular_value_bound = singular_value_bound
@@ -145,7 +136,30 @@ class GrassmannianFusion:
                 #fill in the "identity matrix"
                 self.X0[i][row_index, col_index+1] = 1
 
+    def project(self, xi, Uj)
+        #projects U_j onto the Schubert variety corresponding to X_i
+        A = self.X0[xi] # for a given matrix, first index is row, second is column
+        B = self.U_array[Uj]
+        U, s, Vt = np.linalg.svd(A.T @ B)
+        P = A@U
+        Q = B@Vt.T
+        new_U = Q
+        new_U[:0] = P[:0]
+        self.U_array[Uj] = new_U
+        
+    def testProjection(self, xi, Uj)
+        self.project(xi, Uj)
+        A = self.X0[xi] @ self.X0[xi].T @ self.U_array[Uj]
+                U_A, s_A, VT_A = np.linalg.svd(A) #SVD of X_iX_i^T U_j
+                u = U_A[:,0]
+                vt = VT_A[0,:] ##### verify that these are taken properly #####
 
+                if s_A[0] > 1 and s_A[0] - 1 < self.singular_value_bound:
+                    s_A[0] = 1
+                elif s_A[0] > 1:
+                    raise Exception('Chordal, s_A[0] = ', s_A[0])
+        print(s_A[0])
+    
     def train(self, max_iter:int, step_size:float):
         obj_record = []
         gradient_record = []
