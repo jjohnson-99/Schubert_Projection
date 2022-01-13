@@ -136,7 +136,7 @@ class SchubertProjection:
                 #fill in the "identity matrix"
                 self.X0[i][row_index, col_index+1] = 1
 
-    def project(self, xi, Uj)
+    def project(self, xi, Uj):
         #projects U_j onto the Schubert variety corresponding to X_i
         A = self.X0[xi] # for a given matrix, first index is row, second is column
         B = self.U_array[Uj]
@@ -147,7 +147,7 @@ class SchubertProjection:
         new_U[:0] = P[:0]
         self.U_array[Uj] = new_U
         
-    def testProjection(self, xi, Uj)
+    def testProjection(self, xi, Uj):
         self.project(xi, Uj)
         A = self.X0[xi] @ self.X0[xi].T @ self.U_array[Uj]
                 U_A, s_A, VT_A = np.linalg.svd(A) #SVD of X_iX_i^T U_j
