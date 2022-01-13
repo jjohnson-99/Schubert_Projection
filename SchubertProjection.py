@@ -150,8 +150,8 @@ class SchubertProjection:
         Q = B@Vt.T
         print("Shape Q: ", Q.shape)
         new_U = Q
-        new_U[:,0] = P[:,0]
-        self.U_array[Uj] = new_U
+        #new_U[:,0] = P[:,0]
+        #self.U_array[Uj] = new_U
         
     def testProjection(self, xi, Uj):
         self.project(xi, Uj)
