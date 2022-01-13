@@ -140,9 +140,15 @@ class SchubertProjection:
         #projects U_j onto the Schubert variety corresponding to X_i
         A = self.X0[xi] # for a given matrix, first index is row, second is column
         B = self.U_array[Uj]
+        print("Shape A: ", A.shape)
+        print("Shape B: ", B.shape)
         U, s, Vt = np.linalg.svd(A.T @ B)
+        print("Shape U: ", U.shape)
+        print("Shape Vt: ", Vt.shape)
         P = A@U
+        print("Shape P: ", P.shape)
         Q = B@Vt.T
+        print("Shape Q: ", Q.shape)
         new_U = Q
         new_U[:,0] = P[:,0]
         self.U_array[Uj] = new_U
