@@ -27,7 +27,7 @@ class SchubertProjection:
         np.savez_compressed(path, X=self.X,
                                 Omega = self.Omega,
                                 r = self.r,
-                                lamb = self.lamb,,
+                                lamb = self.lamb,
                                 g_threshold = self.g_threshold,
                                 bound_zero = self.bound_zero,
                                 singular_value_bound = self.singular_value_bound,
