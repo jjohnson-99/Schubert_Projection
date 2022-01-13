@@ -150,14 +150,14 @@ class SchubertProjection:
     def testProjection(self, xi, Uj):
         self.project(xi, Uj)
         A = self.X0[xi] @ self.X0[xi].T @ self.U_array[Uj]
-                U_A, s_A, VT_A = np.linalg.svd(A) #SVD of X_iX_i^T U_j
-                u = U_A[:,0]
-                vt = VT_A[0,:] ##### verify that these are taken properly #####
+        U_A, s_A, VT_A = np.linalg.svd(A) #SVD of X_iX_i^T U_j
+        u = U_A[:,0]
+        vt = VT_A[0,:] ##### verify that these are taken properly #####
 
-                if s_A[0] > 1 and s_A[0] - 1 < self.singular_value_bound:
-                    s_A[0] = 1
-                elif s_A[0] > 1:
-                    raise Exception('Chordal, s_A[0] = ', s_A[0])
+        if s_A[0] > 1 and s_A[0] - 1 < self.singular_value_bound:
+            s_A[0] = 1
+        elif s_A[0] > 1:
+            raise Exception('Chordal, s_A[0] = ', s_A[0])
         print(s_A[0])
     
     def train(self, max_iter:int, step_size:float):
